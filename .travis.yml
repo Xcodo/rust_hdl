@@ -9,7 +9,6 @@ cache: cargo
 
 rust:
   - stable
-  - nightly
 
 env:
   matrix:
@@ -17,34 +16,9 @@ env:
     - CRATE=vhdl_ls
 
 matrix:
-  allow_failures:
-    - rust: nightly
-  fast_finish: true
-
-install:
-  - rustup component add clippy
-  - rustup component add rustfmt
+  fast_finish: tru
 
 script:
-  - cargo fmt --package $CRATE -- --check || [ "$TRAVIS_RUST_VERSION" = "nightly" ]
-  - cargo clippy --package $CRATE || [ "$TRAVIS_RUST_VERSION" = "nightly" ]
   - cargo build --package $CRATE
   - cargo test --package $CRATE
-
-before_deploy:
-  - docker build -t kraigher/$CRATE:${TRAVIS_TAG:-latest} --build-arg RUST_VERSION=$TRAVIS_RUST_VERSION --build-arg CRATE=$CRATE .
-  - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-
-deploy:
-  - provider: script
-    script: cd $CRATE && cargo publish --token "${CRATES_IO_TOKEN}" || true
-    on:
-      rust: stable
-      branch: master
-
-  # @TODO create tag after release
-  - provider: script
-    script: docker push kraigher/$CRATE:${TRAVIS_TAG:-latest}
-    on:
-      rust: stable
-      branch: master
+  
