@@ -232,7 +232,7 @@ impl Config {
         }
     }
 
-    /// Load all external configuration
+    /// Load all external configuration files
     pub fn load_external_config(&mut self, messages: &mut dyn MessageHandler) {
         self.load_home_config(messages);
         self.load_env_config("VHDL_LS_CONFIG", messages);
