@@ -96,22 +96,22 @@ jobs:
           name: vhdl_lang-x86_64-unknown-linux-gnu
       - name: Check vhdl_lang version
         run: |
-          echo Checking version matches tag ${GITHUB_REF:11}
+          echo Checking version matches tag "${GITHUB_REF:11}"
           chmod u+x vhdl_lang-x86_64-unknown-linux-gnu/bin/vhdl_lang
           version_string=$(vhdl_lang-x86_64-unknown-linux-gnu/bin/vhdl_lang --version)
           echo Version string is "$version_string"
-          [[ $version_string != "vhdl_lang ${GITHUB_REF:11}" ]] && exit 1
+          [[ "$version_string" != "vhdl_lang ${GITHUB_REF:11}" ]] && exit 1
       - name: Get vhdl_ls linux
         uses: actions/download-artifact@v1
         with:
           name: vhdl_ls-x86_64-unknown-linux-gnu
       - name: Check vhdl_ls version
         run: |
-          echo Checking version matches tag ${GITHUB_REF:11}
+          echo Checking version matches tag "${GITHUB_REF:11}"
           chmod u+x vhdl_lang-x86_64-unknown-linux-gnu/bin/vhdl_ls
           version_string=$(vhdl_ls-x86_64-unknown-linux-gnu/bin/vhdl_ls --version)
           echo Version string is "$version_string"
-          [[ $version_string != "vhdl_ls ${GITHUB_REF:11}" ]] && exit 1
+          [[ "$version_string" != "vhdl_ls ${GITHUB_REF:11}" ]] && exit 1
       - name: Get vhdl_lang windows
         uses: actions/download-artifact@v1
         with:
