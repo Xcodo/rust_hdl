@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get version
-        id: get-version
+      - name: Show version
         run: echo "This is a release build for v${GITHUB_REF/refs\/tags\/v/}"
 
   build:
@@ -97,35 +96,47 @@ jobs:
 
     steps:
       - name: Get version
-        id: get-version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+        id: v
+        run: |
+          echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
+          echo "Version is v${GITHUB_REF/refs\/tags\/v/}"
       - uses: actions/checkout@v1
       - name: Check release notes exist
         run: |
-          echo "Checking for release notes file at release_notes/v${{ steps.get-version.outputs.VERSION }}.md"
-          [ -f release_notes/v${{ steps.get-version.outputs.VERSION }}.md ] && echo "Release notes found" || { echo "Release notes not found"; exit 1; }
+          if [ -f release_notes/v${{ steps.v.outputs.v }}.md ] then
+            echo "Release notes found at release_notes/v${{ steps.v.outputs.v }}.md"
+          else
+            echo "Release notes not found at release_notes/v${{ steps.v.outputs.v }}.md"
+            exit 1
+          fi
       - name: Get vhdl_lang linux
         uses: actions/download-artifact@v1
         with:
           name: vhdl_lang-x86_64-unknown-linux-gnu
       - name: Check vhdl_lang version
         run: |
-          echo Checking version matches tag \"${GITHUB_REF:11}\"
           chmod u+x vhdl_lang-x86_64-unknown-linux-gnu/bin/vhdl_lang
           version_string=$(vhdl_lang-x86_64-unknown-linux-gnu/bin/vhdl_lang --version)
-          echo Version string is \"$version_string\"
-          [ "$version_string" != "vhdl_lang ${GITHUB_REF:11}" ] && { echo "Version string mismatch"; exit 1; } || echo "Version string matched"
+          if [ "$version_string" != "vhdl_lang ${{ steps.v.outputs.v }}" ] then
+            echo "Version string mismatch (\"$version_string\" != \"vhdl_lang ${{ steps.v.outputs.v }}\""
+            exit 1
+          else
+            echo "Version string matched"
+          fi
       - name: Get vhdl_ls linux
         uses: actions/download-artifact@v1
         with:
           name: vhdl_ls-x86_64-unknown-linux-gnu
       - name: Check vhdl_ls version
         run: |
-          echo Checking version matches tag \"${GITHUB_REF:11}\"
           chmod u+x vhdl_ls-x86_64-unknown-linux-gnu/bin/vhdl_ls
           version_string=$(vhdl_ls-x86_64-unknown-linux-gnu/bin/vhdl_ls --version)
-          echo Version string is \"$version_string\"
-          # [ "$version_string" != "vhdl_ls ${GITHUB_REF:11}" ] && { echo "Version string mismatch"; exit 1; } || echo "Version string matched"
+          if [ "$version_string" != "vhdl_ls ${{ steps.v.outputs.v }}" ] then
+            echo "Version string mismatch (\"$version_string\" != \"vhdl_lang ${{ steps.v.outputs.v }}\""
+            # exit 1
+          else
+            echo "Version string matched"
+          fi
       - name: Get vhdl_lang windows
         uses: actions/download-artifact@v1
         with:
@@ -145,5 +156,5 @@ jobs:
         with:
           draft: false
           artifacts: "vhdl_lang-x86_64-unknown-linux-gnu.zip,vhdl_ls-x86_64-unknown-linux-gnu.zip,vhdl_lang-x86_64-pc-windows-msvc.zip,vhdl_ls-x86_64-pc-windows-msvc.zip"
-          bodyFile: "release_notes/v${{ steps.get-version.outputs.VERSION }}.md"
+          bodyFile: "release_notes/v${{ steps.v.outputs.v }}.md"
           token: ${{ secrets.GITHUB_TOKEN }}
