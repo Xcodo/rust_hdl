@@ -136,7 +136,7 @@ jobs:
           if [ "$version_string" != "vhdl_ls ${{ steps.v.outputs.v }}" ]
           then
             echo "Version string mismatch (\"$version_string\" != \"vhdl_lang ${{ steps.v.outputs.v }}\""
-            # exit 1
+            exit 1
           else
             echo "Version string matched"
           fi
