@@ -124,9 +124,15 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: vhdl_ls-x86_64-pc-windows-msvc
+      - name: Zip artifacts
+        run: |
+          zip -r vhdl_lang-x86_64-unknown-linux-gnu.zip vhdl_lang-x86_64-unknown-linux-gnu
+          zip -r vhdl_ls-x86_64-unknown-linux-gnu.zip vhdl_ls-x86_64-unknown-linux-gnu
+          zip -r vhdl_lang-x86_64-pc-windows-msvc.zip vhdl_lang-x86_64-pc-windows-msvc
+          zip -r vhdl_ls-x86_64-pc-windows-msvc.zip vhdl_ls-x86_64-pc-windows-msvc
       - name: Do release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "vhdl_lang-x86_64-unknown-linux-gnu/,vhdl_ls-x86_64-unknown-linux-gnu/,vhdl_lang-x86_64-pc-windows-msvc/,vhdl_ls-x86_64-pc-windows-msvc/"
+          artifacts: "vhdl_lang-x86_64-unknown-linux-gnu.zip,vhdl_ls-x86_64-unknown-linux-gnu.zip,vhdl_lang-x86_64-pc-windows-msvc.zip,vhdl_ls-x86_64-pc-windows-msvc.zip"
           bodyFile: "release_notes/v${{ steps.get-version.outputs.VERSION }}.md"
           token: ${{ secrets.GITHUB_TOKEN }}
