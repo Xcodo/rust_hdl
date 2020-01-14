@@ -127,6 +127,6 @@ jobs:
       - name: Do release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "vhdl_lang-x86_64-unknown-linux-gnu,vhdl_ls-x86_64-unknown-linux-gnu,vhdl_lang-x86_64-pc-windows-msvc,vhdl_ls-x86_64-pc-windows-msvc"
+          artifacts: "vhdl_lang-x86_64-unknown-linux-gnu/,vhdl_ls-x86_64-unknown-linux-gnu/,vhdl_lang-x86_64-pc-windows-msvc/,vhdl_ls-x86_64-pc-windows-msvc/"
           bodyFile: "release_notes/v${{ steps.get-version.outputs.VERSION }}.md"
           token: ${{ secrets.GITHUB_TOKEN }}
