@@ -86,10 +86,14 @@ jobs:
     needs: build
 
     steps:
+      - name: Get version
+        id: get-version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\/v/}
       - uses: actions/checkout@v1
       - name: Check release notes exist
         run: |
-          [ -f release_notes/v${GITHUB_REF:11}.md ] && echo "Release notes found" || { echo "Release notes not found"; exit 1; }
+          echo "Checking for release notes file at release_notes/v${{ steps.get-version.outputs.VERSION }}.md"
+          [ -f release_notes/v${{ steps.get-version.outputs.VERSION }}.md ] && echo "Release notes found" || { echo "Release notes not found"; exit 1; }
       - name: Get vhdl_lang linux
         uses: actions/download-artifact@v1
         with:
@@ -124,5 +128,5 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "vhdl_lang-x86_64-unknown-linux-gnu,vhdl_ls-x86_64-unknown-linux-gnu,vhdl_lang-x86_64-pc-windows-msvc,vhdl_ls-x86_64-pc-windows-msvc"
-          bodyFile: "release_notes/v${GITHUB_REF:11}.md"
+          bodyFile: "release_notes/v${{ steps.get-version.outputs.VERSION }}.md"
           token: ${{ secrets.GITHUB_TOKEN }}
