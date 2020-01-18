@@ -7,7 +7,7 @@ jobs:
   release-notice:
     name: This is a release build
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
 
     steps:
       - name: Show version
@@ -28,7 +28,7 @@ jobs:
 
         include:
           - target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
+            os: ubuntu-16.04
             ext: ''
           - target: x86_64-pc-windows-msvc
             os: windows-latest
@@ -60,14 +60,14 @@ jobs:
           args: --manifest-path ${{ matrix.crate }}/Cargo.toml --release --target ${{ matrix.target }} --features "packaged"
 
       - name: rustfmt
-        if: matrix.os == 'ubuntu-latest' && matrix.rust == 'stable'
+        if: matrix.os == 'ubuntu-16.04' && matrix.rust == 'stable'
         uses: actions-rs/cargo@v1
         with:
           command: fmt
           args: --package ${{ matrix.crate }} -- --check
 
       - name: clippy
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-16.04'
         uses: actions-rs/cargo@v1
         with:
           command: clippy
@@ -91,7 +91,7 @@ jobs:
   release:
     name: Release
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     needs: build
 
     steps:
