@@ -70,7 +70,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --package ${{ matrix.crate }} --all-targets --all-features -- -D warnings
+          args: --package ${{ matrix.crate }} --all-targets --all-features -- -D warnings -A clippy::upper_case_acronyms #temporary workaround for rust-lang/rust-clippy#6775
 
       - name: Assemble
         if: matrix.rust == 'stable'
